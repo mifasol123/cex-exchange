@@ -1,0 +1,21 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "cd backend/market-aggregator && go run cmd/server/main.go"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[environments.production]
+[environments.production.variables]
+PORT = "8080"
+BINANCE_API_URL = "https://api.binance.com"
+COINGECKO_API_URL = "https://api.coingecko.com/api/v3"
+REDIS_URL = "${{ REDIS_URL }}"
+DATABASE_URL = "${{ DATABASE_URL }}"
+GO_ENV = "production"
+
+[environments.staging]
+[environments.staging.variables]
+PORT = "8080"
+GO_ENV = "staging"

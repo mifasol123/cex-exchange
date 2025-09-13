@@ -1,0 +1,131 @@
+name: cex-exchange
+
+services:
+  # Kong API 网关
+  kong-database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: kongpass
+      POSTGRES_DB: kong
+    volumes:
+      - kong_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kong"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kong-migrations:
+    image: kong/kong-gateway:3.4
+    command: kong migrations bootstrap
+    depends_on:
+      kong-database:
+        condition: service_healthy
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kongpass
+      KONG_PG_DATABASE: kong
+
+  kong:
+    image: kong/kong-gateway:3.4
+    depends_on:
+      kong-migrations:
+        condition: service_completed_successfully
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kongpass
+      KONG_PG_DATABASE: kong
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_ADMIN_GUI_URL: http://localhost:8002
+      KONG_DECLARATIVE_CONFIG: /opt/kong/kong.yml
+    volumes:
+      - ./infrastructure/gateway/kong.yml:/opt/kong/kong.yml:ro
+    ports:
+      - "8000:8000"   # Kong proxy
+      - "8001:8001"   # Kong admin API
+      - "8002:8002"   # Kong Manager
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  # 市场数据聚合服务
+  market-aggregator:
+    build:
+      context: ./backend/market-aggregator
+      dockerfile: Dockerfile
+    environment:
+      PORT: 8080
+      CORS_ORIGINS: "*"
+      BINANCE_BASE: https://api.binance.com
+      COINGECKO_BASE: https://api.coingecko.com
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 透明度服务
+  transparency-service:
+    build:
+      context: ./backend/transparency-service
+      dockerfile: Dockerfile
+    environment:
+      PORT: 8081
+      SERVICE_VERSION: 0.1.0-dev
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis (用于未来的缓存与会话)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL (用于未来的业务数据)
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: cex
+      POSTGRES_PASSWORD: cexpass
+      POSTGRES_DB: cex_main
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cex"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  kong_data:
+  redis_data:
+  postgres_data:
