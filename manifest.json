@@ -3,41 +3,11 @@
   "short_name": "CEX Exchange",
   "description": "专业的数字货币交易平台，提供安全、快速的交易体验",
   "start_url": "/",
-  "display": "standalone",
+  "display": "standalone", 
   "background_color": "#1a1a1a",
   "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "zh-CN",
-  "categories": ["finance", "business"],
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "交易",
-      "short_name": "交易",
-      "description": "快速进入交易界面",
-      "url": "/#trading",
-      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "市场",
-      "short_name": "市场",
-      "description": "查看市场行情",
-      "url": "/#markets",
-      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
-    }
-  ]
+  "categories": ["finance", "business"]
 }
