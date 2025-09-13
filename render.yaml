@@ -1,34 +1,56 @@
-# Render 部署配置
+# Render 免费部署配置 - 针对Go微服务优化
 services:
+  # 市场数据聚合服务 (主服务)
   - type: web
     name: cex-market-aggregator
     env: go
-    buildCommand: cd backend/market-aggregator && go build -o main cmd/server/main.go
+    plan: free  # 明确指定免费计划
+    region: oregon  # 免费区域
+    buildCommand: |
+      cd backend/market-aggregator && 
+      go mod download && 
+      go mod tidy && 
+      go build -o main cmd/server/main.go
     startCommand: cd backend/market-aggregator && ./main
     healthCheckPath: /health
+    autoDeploy: true
     envVars:
       - key: PORT
-        value: 8080
+        value: 10000  # Render 固定端口
       - key: GIN_MODE
         value: release
       - key: CORS_ORIGINS
-        value: "*"
+        value: "https://mifasol123.github.io,*"
       - key: BINANCE_BASE_URL
         value: https://api.binance.com
       - key: COINGECKO_BASE_URL
         value: https://api.coingecko.com/api/v3
       - key: LOG_LEVEL
         value: info
+      - key: CACHE_DEFAULT_EXPIRATION
+        value: 30s
+      - key: RATE_LIMIT_REQUESTS_PER_MINUTE
+        value: 50  # 免费层适中限制
+      - key: REQUEST_TIMEOUT
+        value: 10s
 
+  # 透明度服务 (可选，如需要可单独部署)
   - type: web
     name: cex-transparency-service
     env: go
-    buildCommand: cd backend/transparency-service && go build -o main cmd/server/main.go
+    plan: free
+    region: oregon
+    buildCommand: |
+      cd backend/transparency-service && 
+      go mod download && 
+      go mod tidy && 
+      go build -o main cmd/server/main.go
     startCommand: cd backend/transparency-service && ./main
     healthCheckPath: /health
+    autoDeploy: true
     envVars:
       - key: PORT
-        value: 8081
+        value: 10000
       - key: SERVICE_VERSION
         value: 0.1.0-production
       - key: GIN_MODE
@@ -36,14 +58,10 @@ services:
       - key: LOG_LEVEL
         value: info
 
-  - type: static
-    name: cex-frontend
-    staticPublishPath: .
-    buildCommand: echo "Static files ready"
-    routes:
-      - type: rewrite
-        source: /
-        destination: /index.html
-      - type: rewrite
-        source: /demo
-        destination: /crypto-exchange-complete.html
+# 可选：PostgreSQL 数据库 (免费层)
+databases:
+  - name: cex-postgres
+    databaseName: cex_production
+    user: cex_user
+    plan: free  # 免费 PostgreSQL
+    region: oregon
