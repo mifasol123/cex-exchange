@@ -1,33 +1,39 @@
 [build]
+# 使用 Nixpacks 自动检测和构建 Go 项目
 builder = "NIXPACKS"
-# 构建市场数据聚合服务
-cmd = "cd backend/market-aggregator && go build -o main cmd/server/main.go"
 
 [deploy]
-startCommand = "cd backend/market-aggregator && ./main"
+# 启动市场数据聚合服务
+startCommand = "cd backend/market-aggregator && go run cmd/server/main.go"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
+# 健康检查配置
 healthcheckPath = "/health"
-healthcheckTimeout = 300
+healthcheckTimeout = 30
+# 免费层优化配置
+replicas = 1
 
 [environments.production]
 [environments.production.variables]
+# 基础配置
 PORT = "8080"
 GIN_MODE = "release"
+# API 配置
 BINANCE_BASE_URL = "https://api.binance.com"
 COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3"
-CORS_ORIGINS = "*"
+# 安全配置
+CORS_ORIGINS = "https://mifasol123.github.io,https://cex-exchange.vercel.app,*"
+# 性能优化 (免费层)
 LOG_LEVEL = "info"
 CACHE_DEFAULT_EXPIRATION = "30s"
 CACHE_CLEANUP_INTERVAL = "60s"
-RATE_LIMIT_REQUESTS_PER_MINUTE = "100"
-RATE_LIMIT_REQUESTS_PER_HOUR = "1000"
-# 数据库连接（可选）
-# REDIS_URL = "${{ REDIS_URL }}"
-# DATABASE_URL = "${{ DATABASE_URL }}"
+RATE_LIMIT_REQUESTS_PER_MINUTE = "60"
+RATE_LIMIT_REQUESTS_PER_HOUR = "500"
+REQUEST_TIMEOUT = "10s"
+MAX_REQUEST_SIZE = "1MB"
 
-[environments.staging]
-[environments.staging.variables]
+[environments.development]
+[environments.development.variables]
 PORT = "8080"
 GIN_MODE = "debug"
 LOG_LEVEL = "debug"
