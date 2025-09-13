@@ -1,0 +1,49 @@
+# Render 部署配置
+services:
+  - type: web
+    name: cex-market-aggregator
+    env: go
+    buildCommand: cd backend/market-aggregator && go build -o main cmd/server/main.go
+    startCommand: cd backend/market-aggregator && ./main
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: GIN_MODE
+        value: release
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: BINANCE_BASE_URL
+        value: https://api.binance.com
+      - key: COINGECKO_BASE_URL
+        value: https://api.coingecko.com/api/v3
+      - key: LOG_LEVEL
+        value: info
+
+  - type: web
+    name: cex-transparency-service
+    env: go
+    buildCommand: cd backend/transparency-service && go build -o main cmd/server/main.go
+    startCommand: cd backend/transparency-service && ./main
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8081
+      - key: SERVICE_VERSION
+        value: 0.1.0-production
+      - key: GIN_MODE
+        value: release
+      - key: LOG_LEVEL
+        value: info
+
+  - type: static
+    name: cex-frontend
+    staticPublishPath: .
+    buildCommand: echo "Static files ready"
+    routes:
+      - type: rewrite
+        source: /
+        destination: /index.html
+      - type: rewrite
+        source: /demo
+        destination: /crypto-exchange-complete.html

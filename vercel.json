@@ -1,30 +1,82 @@
 {
   "version": 2,
   "name": "cex-exchange",
+  "functions": {
+    "backend/market-aggregator/cmd/server/main.go": {
+      "runtime": "go1.x"
+    },
+    "backend/transparency-service/cmd/server/main.go": {
+      "runtime": "go1.x"
+    }
+  },
   "builds": [
     {
-      "src": "frontend/web/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "out"
-      }
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "crypto-exchange-complete.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "manifest.json",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "sw.js",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/market/(.*)",
+      "dest": "/backend/market-aggregator/cmd/server/main.go"
     },
     {
-      "src": "/(.*)",
-      "dest": "/frontend/web/$1"
+      "src": "/api/compliance/(.*)",
+      "dest": "/backend/transparency-service/cmd/server/main.go"
+    },
+    {
+      "src": "/health/market",
+      "dest": "/backend/market-aggregator/cmd/server/main.go"
+    },
+    {
+      "src": "/health/transparency",
+      "dest": "/backend/transparency-service/cmd/server/main.go"
+    },
+    {
+      "src": "/(.*\\.(html|js|css|json|png|jpg|svg|ico))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
     }
   ],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://cex-backend-production.up.railway.app",
-    "NEXT_PUBLIC_WS_URL": "wss://cex-backend-production.up.railway.app"
+    "GO_VERSION": "1.21",
+    "PORT": "8080",
+    "GIN_MODE": "release",
+    "CORS_ORIGINS": "*"
   },
   "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-Requested-With, Content-Type, Authorization, X-Request-ID"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
@@ -39,6 +91,10 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
         }
       ]
     }

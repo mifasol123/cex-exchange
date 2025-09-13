@@ -17,15 +17,15 @@ type MarketService struct {
 }
 
 type TickerResponse struct {
-	Symbol      string    `json:"symbol"`
-	Price       string    `json:"price"`
-	Change24h   string    `json:"change24h"`
-	Volume24h   string    `json:"volume24h"`
-	High24h     string    `json:"high24h"`
-	Low24h      string    `json:"low24h"`
-	Source      string    `json:"source"`
-	Timestamp   time.Time `json:"timestamp"`
-	LastUpdate  time.Time `json:"last_update"`
+	Symbol     string    `json:"symbol"`
+	Price      string    `json:"price"`
+	Change24h  string    `json:"change24h"`
+	Volume24h  string    `json:"volume24h"`
+	High24h    string    `json:"high24h"`
+	Low24h     string    `json:"low24h"`
+	Source     string    `json:"source"`
+	Timestamp  time.Time `json:"timestamp"`
+	LastUpdate time.Time `json:"last_update"`
 }
 
 type KlineResponse struct {
@@ -53,7 +53,7 @@ func NewMarketService(binanceClient *client.BinanceClient, coinGeckoClient *clie
 
 func (s *MarketService) GetTicker(symbol string) (*TickerResponse, error) {
 	cacheKey := fmt.Sprintf("ticker:%s", symbol)
-	
+
 	// Try cache first
 	if cached, found := s.cache.Get(cacheKey); found {
 		if ticker, ok := cached.(*TickerResponse); ok {
@@ -76,7 +76,7 @@ func (s *MarketService) GetTicker(symbol string) (*TickerResponse, error) {
 			Timestamp:  time.Now(),
 			LastUpdate: time.Unix(binanceData.CloseTime/1000, 0),
 		}
-		
+
 		// Cache the result
 		s.cache.Set(cacheKey, ticker, cache.DefaultExpiration)
 		log.Info().Str("symbol", symbol).Str("source", "binance").Msg("Ticker fetched successfully")
@@ -112,7 +112,7 @@ func (s *MarketService) GetTicker(symbol string) (*TickerResponse, error) {
 
 func (s *MarketService) GetKlines(symbol, interval string, limit int) (*KlineResponse, error) {
 	cacheKey := fmt.Sprintf("klines:%s:%s:%d", symbol, interval, limit)
-	
+
 	// Try cache first
 	if cached, found := s.cache.Get(cacheKey); found {
 		if klines, ok := cached.(*KlineResponse); ok {
@@ -157,7 +157,7 @@ func (s *MarketService) GetKlines(symbol, interval string, limit int) (*KlineRes
 
 func (s *MarketService) GetDepth(symbol string, limit int) (*DepthResponse, error) {
 	cacheKey := fmt.Sprintf("depth:%s:%d", symbol, limit)
-	
+
 	// Try cache first (shorter cache for depth data)
 	if cached, found := s.cache.Get(cacheKey); found {
 		if depth, ok := cached.(*DepthResponse); ok {
