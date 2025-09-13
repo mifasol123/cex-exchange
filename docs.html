@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEX Exchange - 专业数字货币交易所</title>
+    <meta name="description" content="专业的数字货币交易平台，提供安全、快速的交易体验">
+    
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192/3b82f6/ffffff?text=CEX">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff; 
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .header {
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #333;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #9ca3af;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .demo-link {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .demo-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        .demo-link.secondary {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-section {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin: 0.5rem;
+        }
+        
+        .status-online {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .status-loading {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #6b7280;
+            border-top: 1px solid #374151;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .demo-links { flex-direction: column; align-items: center; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">CEX Exchange</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>企业级数字货币交易所</h1>
+            <p>基于 Go 微服务架构 + PWA 技术的专业交易平台</p>
+            
+            <div class="demo-links">
+                <a href="crypto-exchange-complete.html" class="demo-link">
+                    🚀 体验完整交易平台
+                </a>
+                <a href="https://github.com/mifasol123/cex-exchange" class="demo-link secondary">
+                    📚 查看源代码
+                </a>
+            </div>
+            
+            <div class="status-section">
+                <h3>🔄 部署状态</h3>
+                <div class="status-indicator status-online">
+                    <div class="dot"></div>
+                    前端已部署 (GitHub Pages)
+                </div>
+                <div class="status-indicator status-loading" id="backendStatus">
+                    <div class="dot"></div>
+                    后端服务部署中...
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🏗️</div>
+                <h3>微服务架构</h3>
+                <p>基于 Go 语言的高性能微服务，支持水平扩展</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>PWA 应用</h3>
+                <p>渐进式 Web 应用，支持离线使用和移动端体验</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>企业级安全</h3>
+                <p>多层安全防护，符合金融级安全标准</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>实时数据</h3>
+                <p>WebSocket 实时推送，毫秒级市场数据更新</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>免费部署</h3>
+                <p>基于 Git 平台的完全免费部署方案</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>透明合规</h3>
+                <p>内置储备金证明和合规审计功能</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 CEX Exchange. 企业级数字货币交易所开源项目</p>
+            <p>基于免费Git平台部署 | 完全开源 | 生产就绪</p>
+        </div>
+    </footer>
+
+    <script>
+        // 检测后端服务状态
+        async function checkBackendStatus() {
+            const endpoints = [
+                'https://cex-exchange-production.up.railway.app/health',
+                'https://cex-exchange.vercel.app/health',
+                'https://cex-exchange.onrender.com/health'
+            ];
+            
+            const statusEl = document.getElementById('backendStatus');
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint, { 
+                        method: 'GET',
+                        mode: 'cors',
+                        cache: 'no-cache'
+                    });
+                    
+                    if (response.ok) {
+                        statusEl.className = 'status-indicator status-online';
+                        statusEl.innerHTML = '<div class="dot"></div>后端服务已就绪 ✅';
+                        return;
+                    }
+                } catch (error) {
+                    console.log(`尝试连接 ${endpoint} 失败:`, error);
+                }
+            }
+            
+            // 所有端点都失败，显示部署中状态
+            setTimeout(checkBackendStatus, 10000); // 10秒后重试
+        }
+        
+        // 页面加载完成后检查后端状态
+        document.addEventListener('DOMContentLoaded', () => {
+            checkBackendStatus();
+        });
+        
+        // Service Worker 注册
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+    </script>
+</body>
+</html>
