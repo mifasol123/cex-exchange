@@ -1,28 +1,28 @@
 {
   "version": 2,
-  "name": "cex-exchange",
-  "functions": {
-    "backend/market-aggregator/cmd/server/main.go": {
-      "runtime": "go1.x"
-    }
-  },
-  "routes": [
+  "name": "cex-exchange-frontend",
+  "builds": [
     {
-      "src": "/api/(.*)",
-      "dest": "/backend/market-aggregator/cmd/server/main.go"
+      "src": "*.html",
+      "use": "@vercel/static"
     },
     {
-      "src": "/public/(.*)",
-      "dest": "/backend/market-aggregator/cmd/server/main.go"
+      "src": "*.js",
+      "use": "@vercel/static"
     },
     {
-      "src": "/health",
-      "dest": "/backend/market-aggregator/cmd/server/main.go"
+      "src": "*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "manifest.json",
+      "use": "@vercel/static"
     }
   ],
-  "env": {
-    "GIN_MODE": "release",
-    "PORT": "8080",
-    "CORS_ORIGINS": "https://mifasol123.github.io"
-  }
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
 }
