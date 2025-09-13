@@ -1,0 +1,49 @@
+{
+  "name": "cex-exchange",
+  "version": "1.0.0",
+  "description": "企业级数字货币交易所",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server . -p 3000 -c-1",
+    "build": "echo 'Building frontend...' && npm run optimize",
+    "test": "echo 'Running tests...' && npm run test:frontend",
+    "test:frontend": "echo 'Frontend tests not implemented yet'",
+    "dev": "concurrently \"npm run start\" \"npm run watch\"",
+    "watch": "echo 'Watching for changes...'",
+    "optimize": "html-minifier --input-dir . --output-dir dist --file-ext html",
+    "validate": "html-validate *.html",
+    "lint": "eslint *.js",
+    "format": "prettier --write *.html *.js *.css"
+  },
+  "keywords": [
+    "cryptocurrency",
+    "exchange",
+    "trading",
+    "blockchain",
+    "fintech",
+    "enterprise"
+  ],
+  "author": "CEX Exchange Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "concurrently": "^8.2.2",
+    "html-minifier": "^4.0.0",
+    "html-validate": "^8.7.4",
+    "eslint": "^8.57.0",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mifasol123/cex-exchange.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mifasol123/cex-exchange/issues"
+  },
+  "homepage": "https://github.com/mifasol123/cex-exchange#readme"
+}

@@ -1,0 +1,118 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: market-aggregator
+    url: http://market-aggregator:8080
+    plugins:
+      - name: rate-limiting
+        config:
+          minute: 100
+          hour: 1000
+      - name: cors
+        config:
+          origins:
+            - "*"
+          methods:
+            - GET
+            - POST
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-MD5
+            - Content-Type
+            - Date
+            - X-Auth-Token
+            - X-Request-ID
+          exposed_headers:
+            - X-Auth-Token
+            - X-Request-ID
+          credentials: true
+          max_age: 3600
+
+  - name: transparency-service
+    url: http://transparency-service:8081
+    plugins:
+      - name: rate-limiting
+        config:
+          minute: 50
+          hour: 500
+      - name: cors
+        config:
+          origins:
+            - "*"
+          methods:
+            - GET
+            - OPTIONS
+          headers:
+            - Accept
+            - Accept-Version
+            - Content-Length
+            - Content-Type
+            - X-Request-ID
+          exposed_headers:
+            - X-Request-ID
+          credentials: true
+          max_age: 3600
+
+routes:
+  - name: market-data
+    service: market-aggregator
+    paths:
+      - /public/market
+    strip_path: false
+    preserve_host: false
+
+  - name: compliance
+    service: transparency-service
+    paths:
+      - /compliance
+    strip_path: false
+    preserve_host: false
+
+  - name: health-market
+    service: market-aggregator
+    paths:
+      - /health/market
+    strip_path: true
+    preserve_host: false
+
+  - name: health-transparency
+    service: transparency-service
+    paths:
+      - /health/transparency
+    strip_path: true
+    preserve_host: false
+
+upstreams:
+  - name: market-aggregator-upstream
+    algorithm: round-robin
+    healthchecks:
+      active:
+        http_path: "/health"
+        healthy:
+          interval: 10
+          successes: 3
+        unhealthy:
+          interval: 10
+          http_failures: 3
+    targets:
+      - target: market-aggregator:8080
+        weight: 100
+
+  - name: transparency-service-upstream
+    algorithm: round-robin
+    healthchecks:
+      active:
+        http_path: "/health"
+        healthy:
+          interval: 10
+          successes: 3
+        unhealthy:
+          interval: 10
+          http_failures: 3
+    targets:
+      - target: transparency-service:8081
+        weight: 100
